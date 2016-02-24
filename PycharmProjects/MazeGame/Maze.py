@@ -219,3 +219,4 @@ class Maze:
         self.cells[self.px + x][self.py + y].redraw(sur)
 
 
+
