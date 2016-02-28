@@ -32,6 +32,12 @@ class Maze:
                 z.append(Cell())
             self.cells.append(z)
 
+    def getrow(self):
+        return self.row
+
+    def getcol(self):
+        return self.col
+
     def reset(self):
         self.cells = []
         self.unvisitedNeighbors = []
@@ -209,14 +215,33 @@ class Maze:
                 print("Finished Generating Maze!")
                 break
 
-    def placePlayer(self, sur):
-        Player(sur, 0, 0, self.cells)
-
     def turn(self, sur, x, y):
-        self.cells[self.px][self.py].player = False
+        # Going east
+        if x > 0 and self.cells[self.px][self.py].eThick:
+            pass
+        elif x < 0 and self.cells[self.px][self.py].wThick:
+            pass
+        elif y < 0 and self.cells[self.px][self.py].nThick:
+            pass
+        elif y > 0 and self.cells[self.px][self.py].sThick:
+            pass
+        else:
+            self.cells[self.px][self.py].player = False
+            self.cells[self.px][self.py].redraw(sur)
+            self.px = self.px + x
+            self.py = self.py + y
+            self.cells[self.px][self.py].placePlayer(sur)
+            self.cells[self.px][self.py].player = True
+
         self.cells[self.px][self.py].redraw(sur)
-        self.cells[self.px + x][self.py + y].placePlayer(sur)
-        self.cells[self.px + x][self.py + y].redraw(sur)
+        if self.px == self.col - 1 and self.py == self.row - 1:
+            print("You won!")
+
+    def place(self, sur, x, y):
+        self.px = x
+        self.py = y
+        self.cells[self.px][self.py].player = True
+
 
 
 

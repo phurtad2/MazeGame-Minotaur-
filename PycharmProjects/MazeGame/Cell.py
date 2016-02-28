@@ -59,6 +59,8 @@ class Cell:
                                ( int(self.nw[0] + self.getSize()/2), int(self.nw[1] + self.getSize()/2)),\
                                int(self.getSize()/4), 0)
 
+
+
     def destroy(self, wall):
         #Destroy which wall?
 
@@ -96,8 +98,13 @@ class Cell:
             east(sur, self.color, self.ne, self.se, 3)
         if(self.player):
             pygame.draw.circle(sur, self.yellow, \
-                               ( int(self.nw[0] + self.getSize()/2), int(self.nw[1] + self.getSize()/2)),\
-                               int(self.getSize()/4), 0)
+                                   ( int(self.nw[0] + self.getSize()/2), int(self.nw[1] + self.getSize()/2)),\
+                                   int(self.getSize()/4), 0)
+        else:
+            pygame.draw.circle(sur, self.black, \
+                             ( int(self.nw[0] + self.getSize()/2), int(self.nw[1] + self.getSize()/2)),\
+                            int(self.getSize()/4), 0)
+
 
 
     def getSize(self):
@@ -123,4 +130,3 @@ class Cell:
 
     def placePlayer(self, sur):
         self.player = True
-        # pygame.draw.circle(sur, self.yellow, self.nw, 10, 0)

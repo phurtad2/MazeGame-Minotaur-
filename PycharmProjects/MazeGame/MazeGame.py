@@ -1,27 +1,36 @@
 import pygame
 from Cell import Cell
 from Maze import Maze
+import random
+
 
 pygame.init()
+
+moves = 0
+turns = 0
+
 running = True
-display = pygame.display.set_mode((500,500))
+display = pygame.display.set_mode((700,700))
 myfont = pygame.font.SysFont("monospace", 30)
 
 # render text
-label = myfont.render("Run-In-A-Maze Game!", 15, (255,255,0))
-display.blit(label, (10, 10))
+title = myfont.render("Run-In-A-Maze Game!", 15, (255,255,0))
 
-current = Maze(15,15)
+display.blit(title, (10, 10))
 
 
+
+
+current = Maze(13, 13)
 current.mazify()
-current.placePlayer(display)
-current.draw(display, 40, 40)
+
+current.place(display, random.randint(0, current.getrow()), random.randint(0, current.getcol()))
+#current.draw(display, 40, 60)
 
 
 while running:
-
-    current.draw(display, 40, 40)
+    display.blit(myfont.render("Turns: " + str(turns), 15, (255, 255, 0)), (10, 30))
+    current.draw(display, 40, 60)
     pygame.display.update()
 
     pygame.time.delay(10)
@@ -31,16 +40,13 @@ while running:
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_UP:
                 current.turn(display, 0, -1)
-                print("up")
             elif event.key == pygame.K_DOWN:
                 current.turn(display, 0, 1)
-                print("down")
             elif event.key == pygame.K_LEFT:
                 current.turn(display, - 1, 0)
-                print("left")
             elif event.key == pygame.K_RIGHT:
                 current.turn(display, 1, 0)
-                print("right")
+            turns += 1
         elif event.type == pygame.KEYUP:
             pass
     pygame.event.clear()
