@@ -6,20 +6,21 @@ import random
 
 
 class Maze:
+    cellSize = 30
     cells = []
     unvisitedNeighbors = []
 
-    px = 0
-    py = 0
+    priorx = -1
+    priory = -1
 
     lx = 0
     ly = 0
     row = 0
     col = 0
-
-    def __init__(self, row, col):
-        # self.cells = np.arange(row*col).reshape(row, col)
-
+    player = Player(0, 0)
+    sur = None
+    def __init__(self, sur, row, col):
+        self.sur = sur
         if row <=0 or col <= 0:
             print("This isn't a maze...Setting to (1, 1)")
             row = 1
@@ -29,8 +30,11 @@ class Maze:
         for x in range(self.col):
             z = []
             for y in range(self.row):
-                z.append(Cell())
+                z.append(Cell(self.cellSize))
+                # z[x][y].setSize(40)
             self.cells.append(z)
+        self.player = Player(0, 0)
+        self.cells[0][0].player = True
 
     def getrow(self):
         return self.row
@@ -47,20 +51,43 @@ class Maze:
                 z.append(Cell())
             self.cells.append(z)
 
-    def draw(self, sur, locx, locy):
-        i = len(self.cells)
-        j = len(self.cells[0])
+    def draw(self, locx, locy):
+        i = len(self.cells[0])
+        j = len(self.cells)
         originx = locx
         originy = locy
-        for x in range(i):
-            for y in range(j):
-                # self.cells[x][y].setColor((random.randint(0,255), random.randint(0,255), random.randint(0,255)))
-                self.cells[x][y].draw(sur, (locx, locy))
+        for y in range(i):
+            for x in range(j):
+                current = self.cells[x][y]
+                #current.setColor((random.randint(0,255),random.randint(0,255), random.randint(0,255)))
+                current.nw = (locx, locy)
+                current.ne = (current.nw[0] + current.getSize(), current.nw[1])
+                current.se = (current.nw[0] + current.getSize(), current.nw[1] + current.getSize())
+                current.sw = (current.nw[0], current.nw[1] + current.getSize())
+        
+                north = pygame.draw.line
+                south = pygame.draw.line
+                east = pygame.draw.line
+                west = pygame.draw.line
+                if(current.nThick):
+                    north(self.sur, current.color, current.nw, current.ne, 3)
+                if(current.sThick):
+                    south(self.sur, current.color, current.sw, current.se, 3)
+                if(current.wThick):
+                    west(self.sur, current.color, current.nw, current.sw, 3)
+                if(current.eThick):
+                    east(self.sur, current.color, current.ne, current.se, 3)
+                # Player positioning
+                ppos = (current.nw[0] + int(current.getSize()/2), current.nw[1] + int(current.getSize()/2))
+                radius = int(current.getSize()*.3)
+                if(current.player):
+                    pygame.draw.circle(self.sur, self.player.getColor(), ppos, radius , 0)
+                else:
+                    pygame.draw.circle(self.sur, (0, 0, 0),  ppos, radius, 0)
+                locx += self.cells[x][y].getSize()
 
-                locy += self.cells[x][y].getSize()
-
-            locx += self.cells[x][0].getSize()
-            locy = originy
+            locy += self.cells[x][y].getSize()
+            locx = originx
 
     def redraw(self, x, y):
         pass
@@ -93,7 +120,7 @@ class Maze:
         return 0 <= x < len(self.cells) and 0 <= y < len(self.cells[0])
 
     def mazify(self):
-        self.reset()
+        #self.reset()
 
         if len(self.cells) <= 1 or len(self.cells[0]) <= 1:
             print("That isn't a maze...")
@@ -215,33 +242,31 @@ class Maze:
                 print("Finished Generating Maze!")
                 break
 
-    def turn(self, sur, x, y):
+    def turn(self, x, y):
+        goingx = self.player.getX()
+        goingy = self.player.getY()
         # Going east
-        if x > 0 and self.cells[self.px][self.py].eThick:
+        if x > 0 and self.cells[goingx][goingy].eThick:
             pass
-        elif x < 0 and self.cells[self.px][self.py].wThick:
+        elif x < 0 and self.cells[goingx][goingy].wThick:
             pass
-        elif y < 0 and self.cells[self.px][self.py].nThick:
+        elif y < 0 and self.cells[goingx][goingy].nThick:
             pass
-        elif y > 0 and self.cells[self.px][self.py].sThick:
+        elif y > 0 and self.cells[goingx][goingy].sThick:
             pass
         else:
-            self.cells[self.px][self.py].player = False
-            self.cells[self.px][self.py].redraw(sur)
-            self.px = self.px + x
-            self.py = self.py + y
-            self.cells[self.px][self.py].placePlayer(sur)
-            self.cells[self.px][self.py].player = True
+            self.cells[self.player.getX()][self.player.getY()].player = False
+            self.player.move(x, y)
+            # self.player.setColor((255, 255, 0))
+            self.cells[self.player.getX()][self.player.getY()].player = True
 
-        self.cells[self.px][self.py].redraw(sur)
-        if self.px == self.col - 1 and self.py == self.row - 1:
-            print("You won!")
+        #self.cells[self.px][self.py].redraw(sur)
+
 
     def place(self, sur, x, y):
         self.px = x
         self.py = y
         self.cells[self.px][self.py].player = True
-
 
 
 

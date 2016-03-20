@@ -8,7 +8,7 @@ class Cell:
     visited = False
     value = random.randint(0, 10000)
 
-    size = 28
+    size = 20
     nThick = True
     sThick = True
     wThick = True
@@ -26,7 +26,7 @@ class Cell:
     se = (0, 0)
     sw = (0, 0)
 
-    def __init__(self):
+    def __init__(self, s):
         self.visited = False
         self.player = False
 
@@ -35,31 +35,7 @@ class Cell:
         self.nThick = True
         self.sThick = True
         self.value = random.randint(0, 10000)
-
-    def draw(self, sur, x):
-        self.nw = x
-        self.ne = (x[0] + self.size, x[1])
-        self.se = (x[0] + self.size, x[1] + self.size)
-        self.sw = (x[0], x[1] + self.size)
-
-        north = pygame.draw.line
-        south = pygame.draw.line
-        east = pygame.draw.line
-        west = pygame.draw.line
-        if(self.nThick):
-            north(sur, self.color, self.nw, self.ne, 3)
-        if(self.sThick):
-            south(sur, self.color, self.sw, self.se, 3)
-        if(self.wThick):
-            west(sur, self.color, self.nw, self.sw, 3)
-        if(self.eThick):
-            east(sur, self.color, self.ne, self.se, 3)
-        if(self.player):
-            pygame.draw.circle(sur, self.yellow, \
-                               ( int(self.nw[0] + self.getSize()/2), int(self.nw[1] + self.getSize()/2)),\
-                               int(self.getSize()/4), 0)
-
-
+        self.size = s
 
     def destroy(self, wall):
         #Destroy which wall?
@@ -76,11 +52,7 @@ class Cell:
         #self.redraw(sur)
         # print("it worked")
 
-    def allBlack(self,sur):
-        self.north(sur, self.black, self.nw, self.ne, self.nThick)
-        self.south(sur, self.black, self.sw, self.se, self.sThick)
-        self.west(sur, self.black, self.nw, self.sw, self.wThick)
-        self.east(sur, self.black, self.ne, self.se, self.eThick)
+
 
     def redraw(self, sur):
         north = pygame.draw.line
@@ -109,6 +81,9 @@ class Cell:
 
     def getSize(self):
         return self.size
+
+    def setSize(self, newSize):
+        self.size = newSize
 
     def getValue(self):
         return self.value
